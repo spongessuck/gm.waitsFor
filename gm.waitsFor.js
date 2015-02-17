@@ -6,16 +6,20 @@
 		return {
 			restrict:'A',
 			controller:['$scope', '$templateCache', function($scope, $templateCache) {
-				defaultTemplate = $templateCache.get(defaultTemplateUrl) || defaultTemplate;
+				$scope.getTemplate = function(templateUrl) {
+				  templateUrl = templateUrl || defaultTemplateUrl;
+				  return $templateCache.get(templateUrl) || defaultTemplate;
+				}
 			}],
 			link:function(scope, elem, attrs) {
+			  
 				var contents = elem.contents();
 				contents.addClass('hidden');
 				
 				var msgEl;
-				
-				var waitingTemplate = attrs.waitingTemplate || defaultTemplate;
-				
+				console.log(attrs.waitingTemplateUrl);
+				var waitingTemplate = scope.getTemplate(attrs.waitingTemplateUrl);
+				console.log(waitingTemplate)
 				msgEl = angular.element(waitingTemplate);
 				
 				if(attrs.waitingMessage) {
