@@ -18,8 +18,12 @@
 				
 				msgEl = angular.element(waitingTemplate);
 				
-				if(attrs.waitingMessage)
-					msgEl.append('<span>' + attrs.waitingMessage + '</span>');
+				if(attrs.waitingMessage) {
+					if(waitingTemplate == defaultTemplate)
+						msgEl.html(attrs.waitingMessage);
+					else
+						msgEl.append('<span>' + attrs.waitingMessage + '</span>');
+				}
 				
 				elem.append(msgEl);
 				
