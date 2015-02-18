@@ -24,7 +24,7 @@ By default, it will just show the message 'Loading...'. You can also add an ngTe
 You can also add an attribute 'waiting-message' to show a custom message, or 'waiting-template-url' to show a non-default template.
 
 # Demo
-[View on Plunker](http://plnkr.co/edit/2zUf8keccySHhxyEebEr?p=preview)
+[View on Plunker](http://plnkr.co/edit/8qU5ft?p=preview)
 
 Thanks to @tobiasahlin for spinner.
 
