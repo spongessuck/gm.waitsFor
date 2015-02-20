@@ -24,7 +24,7 @@
 					if(template == defaultTemplate)
 						msgEl.html(attrs.waitingMessage);
 					else
-						elem.after('<span>' + attrs.waitingMessage + '</span>');
+						msgTemplate = angular.element('<span>' + attrs.waitingMessage + '</span>');
 				}
 				
 				scope.$watch(function() {
@@ -33,9 +33,13 @@
 					if(newVal) {
 						contents.removeClass('hidden');
 						msgEl.remove();
+						if(msgTemplate)
+							msgTemplate.remove();
 					} else {
 						contents.addClass('hidden');
 						elem.append(msgEl);
+						if(msgTemplate)
+							elem.after(msgTemplate);
 					}
 				});
 			}

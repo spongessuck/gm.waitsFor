@@ -10,7 +10,8 @@
   "keywords": [
     "angular",
     "ajax",
-    "loading"
+    "loading",
+    "http"
   ],
   "author": "Greg McGee",
   "license": "MIT",

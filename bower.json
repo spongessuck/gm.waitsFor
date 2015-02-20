@@ -1,0 +1,30 @@
+{
+  "name": "gm.waitsFor",
+  "version": "1.0.1",
+  "homepage": "https://github.com/spongessuck/gm.waitsFor",
+  "authors": [
+    "Greg McGee <spongessuck@gmail.com>"
+  ],
+  "description": "AngularJS module that displays a message in place of an element while a value it depends on loads asynchronously.",
+  "main": "dist/gm.waitsFor.min.js",
+  "moduleType": [
+    "node"
+  ],
+  "keywords": [
+    "angular",
+    "ajax",
+    "loading",
+    "http"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "angular": ">=1.2.0"
+  }
+}
