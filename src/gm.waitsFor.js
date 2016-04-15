@@ -1,48 +1,69 @@
-(function() {
-  angular.module('gm.waitsFor', [])
-  .directive('waitsFor', function() {
+(function () {
+	angular.module('gm.waitsFor', [])
+		.provider('waitsForConfig', waitsForConfigProvider)
+		.directive('waitsFor', ['waitsForConfig', waitsForDirective]);
+
+	function waitsForConfigProvider() {
+		this.defaultTemplateUrl = function (url) {
+			config.defaultTemplateUrl = url;
+		};
+
+		this.defaultTemplate = function (templateString) {
+			config.defaultTemplate = templateString;
+		};
+
+		var config = {
+			defaultTemplateUrl: null,
+			defaultTemplate: '<span>Loading...</span>'
+		};
+
+		this.$get = function () {
+			return config;
+		};
+	}
+
+	function waitsForDirective(config) {
 		var template;
-		var defaultTemplateUrl = 'waitsFor.tpl.html';
-		var defaultTemplate = '<span>Loading...</span>';
 		return {
-			restrict:'A',
-			controller:['$scope', '$templateCache', function($scope, $templateCache) {
-				template = $templateCache.get(defaultTemplateUrl) || defaultTemplate;
+			restrict: 'A',
+			controller: ['$templateCache', function ($templateCache) {
+				template = config.defaultTemplateUrl ? $templateCache.get(config.defaultTemplateUrl) : config.defaultTemplate;
 			}],
-			link:function(scope, elem, attrs) {
-				var contents = elem.contents();
-				
+			link: function (scope, elem, attrs) {
 				var msgEl;
 				var msgTemplate;
-				
-				if(attrs.waitingTemplate)
+
+				if (attrs.waitingTemplate)
 					msgEl = angular.element(attrs.waitingTemplate);
 				else
 					msgEl = angular.element(template);
-				
-				if(attrs.waitingMessage) {
-					if(template == defaultTemplate)
+
+				if (attrs.waitingMessage) {
+					if (template == config.defaultTemplate)
 						msgEl.html(attrs.waitingMessage);
 					else
 						msgTemplate = angular.element('<span>' + attrs.waitingMessage + '</span>');
 				}
-				
-				scope.$watch(function() {
+
+				var cancelWatch = scope.$watch(function () {
 					return scope.$eval(attrs.waitsFor);
-				}, function(newVal) {
-					if(newVal) {
-						contents.removeClass('hidden');
+				}, function (newVal) {
+					if (newVal) {
+						elem.contents().removeClass('hidden');
 						msgEl.remove();
-						if(msgTemplate)
+						if (msgTemplate)
 							msgTemplate.remove();
+
+						if (!attrs.hasOwnProperty('waitsForPersist') || !attrs.waitsForPersist)
+							cancelWatch();
 					} else {
-						contents.addClass('hidden');
+						elem.contents().addClass('hidden');
 						elem.append(msgEl);
-						if(msgTemplate)
+						if (msgTemplate)
 							elem.after(msgTemplate);
 					}
 				});
 			}
 		}
-	});
+	}
 })();
