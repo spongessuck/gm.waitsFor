@@ -1,5 +1,5 @@
 {
-  "name": "gm.waitsFor",
+  "name": "gm.waits-for",
   "version": "1.1.0",
   "description": "AngularJS module that displays a message in place of an element while a value it depends on loads asynchronously.",
   "main": "dist/gm.waitsFor.js",
