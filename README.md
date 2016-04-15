@@ -23,7 +23,9 @@ By default, it will just show `<span>'Loading...'</span>`. You can also provide 
 
 You can also add an attribute `waits-for-template` to show a non-default template, or `waits-for-template-url` to load a non-default template from a file or from `$templateCache`. A template from a URL takes precedence over a string template.
 
+The watcher that checks the value passed in to the `waitsFor` attribute is automatically cancelled after the value resolves to a truthy value. To keep the watcher active, set the `waitsForPersist` attribute to a truthy value.
+
 # Demo
-[View on Plunker](http://plnkr.co/edit/8qU5ft?p=preview)
+[View on Plunker](http://plnkr.co/edit/oS1nUW?p=preview)
 
 Thanks to @tobiasahlin for spinner.
