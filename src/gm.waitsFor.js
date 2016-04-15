@@ -1,7 +1,7 @@
 (function () {
 	angular.module('gm.waitsFor', [])
-		.provider('waitsForConfig', waitsForConfigProvider)
-		.directive('waitsFor', ['waitsForConfig', waitsForDirective]);
+	.provider('waitsForConfig', waitsForConfigProvider)
+	.directive('waitsFor', ['waitsForConfig', '$http', waitsForDirective]);
 
 	function waitsForConfigProvider() {
 		this.defaultTemplateUrl = function (url) {
@@ -17,52 +17,66 @@
 			defaultTemplate: '<span>Loading...</span>'
 		};
 
-		this.$get = function () {
+		this.$get = function ($templateCache, $http) {
+			var templateInCache = config.defaultTemplateUrl && $templateCache.get(config.defaultTemplateUrl);
+
+			if(config.defaultTemplateUrl && !templateInCache) {
+				config.templateRequest = $http.get(config.defaultTemplateUrl)
+				.success(function(result) {
+					config.defaultTemplate = result;
+				});
+			}
 			return config;
 		};
 	}
 
-	function waitsForDirective(config) {
-		var template;
+	function waitsForDirective(config, $http) {
+
 		return {
 			restrict: 'A',
-			controller: ['$templateCache', function ($templateCache) {
-				template = config.defaultTemplateUrl ? $templateCache.get(config.defaultTemplateUrl) : config.defaultTemplate;
-			}],
 			link: function (scope, elem, attrs) {
 				var msgEl;
 				var msgTemplate;
+				var template = config.defaultTemplate;
 
-				if (attrs.waitingTemplate)
-					msgEl = angular.element(attrs.waitingTemplate);
-				else
-					msgEl = angular.element(template);
-
-				if (attrs.waitingMessage) {
-					if (template == config.defaultTemplate)
-						msgEl.html(attrs.waitingMessage);
-					else
-						msgTemplate = angular.element('<span>' + attrs.waitingMessage + '</span>');
+				if(attrs.waitsForTemplateUrl) {
+					// Template URL passed in as attribute
+					$http.get(scope.$eval(attrs.waitsForTemplateUrl))
+					.success(templateReady);
 				}
+				else if(scope.$eval(attrs.waitsForTemplate))
+					// Template string passed in as attribute
+					templateReady(scope.$eval(attrs.waitsForTemplate));
+				else if(config.templateRequest)
+					// Template URL passed in as default - continue when ready
+					config.templateRequest.success(templateReady);
+				else
+					// Use default template string
+					templateReady(template)
 
-				var cancelWatch = scope.$watch(function () {
-					return scope.$eval(attrs.waitsFor);
-				}, function (newVal) {
-					if (newVal) {
-						elem.contents().removeClass('hidden');
-						msgEl.remove();
-						if (msgTemplate)
-							msgTemplate.remove();
+				function templateReady(templateString) {
 
-						if (!attrs.hasOwnProperty('waitsForPersist') || !attrs.waitsForPersist)
-							cancelWatch();
-					} else {
-						elem.contents().addClass('hidden');
-						elem.append(msgEl);
-						if (msgTemplate)
-							elem.after(msgTemplate);
-					}
-				});
+					msgEl = angular.element(templateString);
+
+					var cancelWatch = scope.$watch(function () {
+						return scope.$eval(attrs.waitsFor);
+					}, function (newVal) {
+						if (newVal) {
+							elem.contents().removeClass('hidden');
+							msgEl.remove();
+							if (msgTemplate)
+								msgTemplate.remove();
+
+							if (!attrs.waitsForPersist)
+								cancelWatch();
+						} else {
+							elem.contents().addClass('hidden');
+							elem.append(msgEl);
+							if (msgTemplate)
+								elem.after(msgTemplate);
+						}
+					});
+				}
 			}
 		}
 	}
