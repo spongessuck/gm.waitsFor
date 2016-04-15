@@ -9,8 +9,25 @@
 	<script src="app.js"></script>
 </head>
 <body>
+
+	<h3>Using defaults</h3>
 	<div waits-for="value">
-		<div>Value is ready</div>
+		<div>Value is {{value?'':'not'}} ready.</div>
+	</div>
+
+	<h3>Using a custom template string</h3>
+	<div waits-for="value" waits-for-template='"<span class=\"text-info\">Loading value...</span>"'>
+		<div>Value is {{value?'':'not'}} ready.</div>
+	</div>
+
+	<h3>Using custom template URL</h3>
+	<div waits-for="value" waits-for-template-url='"waitsFor.tpl.html"'>
+		<div>Value is {{value?'':'not'}} ready.</div>
+	</div>
+
+	<h3>Using defaults with persist turned on</h3>
+	<div waits-for="value" waits-for-persist='true'>
+		<div>Value is {{value?'':'not'}} ready.</div>
 	</div>
 </body>
 </html>

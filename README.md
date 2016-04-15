@@ -17,17 +17,13 @@ Say you have some data you're loading asynchronously. You can use waitsFor to sh
       </div>
     </div>
 
-The directive is similar to ngShow in that it hides the inner HTML of the element until the property is truthy using a 'hidden' class.
+The directive is similar to ngShow in that it hides the inner HTML of the element until the property is truthy using a 'hidden' class. Because of this, the contents have to be inside elements to be hidden. Text nodes will be unaffected.
 
-By default, it will just show the message 'Loading...'. You can also add an ngTemplate script to your HTML with id='waitsFor.tpl.html'. Any uses of waitsFor will then load that template to show instead. This allows you to show a custom element or spinner using CSS a la [SpinKit](https://github.com/tobiasahlin/SpinKit).
+By default, it will just show `<span>'Loading...'</span>`. You can also provide your own default template using `waitsForConfigProvider`.
 
-You can also add an attribute 'waiting-message' to show a custom message, or 'waiting-template-url' to show a non-default template. If you specify a default or custom template **and** also assign a value to waiting-message, the message will appear below the template.
+You can also add an attribute `waits-for-template` to show a non-default template, or `waits-for-template-url` to load a non-default template from a file or from `$templateCache`. A template from a URL takes precedence over a string template.
 
 # Demo
 [View on Plunker](http://plnkr.co/edit/8qU5ft?p=preview)
 
 Thanks to @tobiasahlin for spinner.
-
-# Pull Requests Welcome
-
-Setting up a config to set default would be nice, as well as supporting actual files instead of $templateCache entries. These aren't something I need, but could be useful for others.
