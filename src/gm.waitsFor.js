@@ -1,7 +1,7 @@
 (function () {
 	angular.module('gm.waitsFor', [])
-	.provider('waitsForConfig', waitsForConfigProvider)
-	.directive('waitsFor', ['waitsForConfig', '$http', waitsForDirective]);
+	.provider('waitsForConfig',  waitsForConfigProvider)
+	.directive('waitsFor', ['$templateCache', '$http', 'waitsForConfig', waitsForDirective]);
 
 	function waitsForConfigProvider() {
 		this.defaultTemplateUrl = function (url) {
@@ -17,20 +17,21 @@
 			defaultTemplate: '<span>Loading...</span>'
 		};
 
-		this.$get = function ($templateCache, $http) {
-			var templateInCache = config.defaultTemplateUrl && $templateCache.get(config.defaultTemplateUrl);
-
-			if(config.defaultTemplateUrl && !templateInCache) {
-				config.templateRequest = $http.get(config.defaultTemplateUrl)
-				.success(function(result) {
-					config.defaultTemplate = result;
-				});
-			}
+		this.$get = function () {
 			return config;
-		};
+		}
 	}
 
-	function waitsForDirective(config, $http) {
+	function waitsForDirective($templateCache, $http, config) {
+
+		var templateInCache = config.defaultTemplateUrl && $templateCache.get(config.defaultTemplateUrl);
+
+		if(config.defaultTemplateUrl && !templateInCache) {
+			config.templateRequest = $http.get(config.defaultTemplateUrl)
+			.success(function(result) {
+				config.defaultTemplate = result;
+			});
+		}
 
 		return {
 			restrict: 'A',
