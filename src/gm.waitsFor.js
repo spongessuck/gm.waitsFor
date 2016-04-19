@@ -63,7 +63,7 @@
 						return scope.$eval(attrs.waitsFor);
 					}, function (newVal) {
 						if (newVal) {
-							elem.contents().removeClass('hidden');
+							elem.contents().removeClass('ng-hide');
 							msgEl.remove();
 							if (msgTemplate)
 								msgTemplate.remove();
@@ -71,7 +71,7 @@
 							if (!attrs.waitsForPersist)
 								cancelWatch();
 						} else {
-							elem.contents().addClass('hidden');
+							elem.contents().addClass('ng-hide');
 							elem.append(msgEl);
 							if (msgTemplate)
 								elem.after(msgTemplate);
